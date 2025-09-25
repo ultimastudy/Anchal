@@ -1,0 +1,625 @@
+import React, { useState, useEffect } from 'react';
+import { Camera, Video, Calendar, Star, MapPin, Phone, Mail, User, MessageCircle, Menu, X, ChevronDown, Filter } from 'lucide-react';
+
+const App = () => {
+  const [activeSection, setActiveSection] = useState('home');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState('');
+  const [bookingDate, setBookingDate] = useState('');
+  const [bookingTime, setBookingTime] = useState('');
+  const [filterCategory, setFilterCategory] = useState('all');
+
+  // Mock data
+  const services = [
+    { id: 1, name: 'Wedding Photography', category: 'photography', price: '₹15,000', description: 'Complete wedding day coverage with professional photography' },
+    { id: 2, name: 'Portrait Sessions', category: 'photography', price: '₹3,000', description: 'Individual and family portrait sessions' },
+    { id: 3, name: 'Event Videography', category: 'videography', price: '₹12,000', description: 'Professional event videography with editing' },
+    { id: 4, name: 'Commercial Shoots', category: 'photography', price: '₹8,000', description: 'Product and commercial photography' },
+    { id: 5, name: 'Drone Videography', category: 'videography', price: '₹10,000', description: 'Aerial shots and cinematic drone footage' },
+    { id: 6, name: 'Pre-Wedding Shoot', category: 'photography', price: '₹7,000', description: 'Romantic pre-wedding photoshoot session' }
+  ];
+
+  const portfolioItems = [
+    { id: 1, category: 'wedding', image: 'https://placehold.co/400x300/7A1C1C/FFFFFF?text=Wedding+Photo+1' },
+    { id: 2, category: 'portrait', image: 'https://placehold.co/400x300/D4AF37/7A1C1C?text=Portrait+Photo+1' },
+    { id: 3, category: 'event', image: 'https://placehold.co/400x300/F8F9FA/7A1C1C?text=Event+Photo+1' },
+    { id: 4, category: 'wedding', image: 'https://placehold.co/400x300/7A1C1C/FFFFFF?text=Wedding+Video+1' },
+    { id: 5, category: 'portrait', image: 'https://placehold.co/400x300/D4AF37/7A1C1C?text=Portrait+Video+1' },
+    { id: 6, category: 'event', image: 'https://placehold.co/400x300/F8F9FA/7A1C1C?text=Event+Video+1' }
+  ];
+
+  const testimonials = [
+    { id: 1, name: 'Rahul Sharma', rating: 5, comment: 'Amazing work! Captured every moment beautifully.' },
+    { id: 2, name: 'Priya Patel', rating: 5, comment: 'Professional service and excellent quality photos.' },
+    { id: 3, name: 'Vikash Gupta', rating: 4, comment: 'Great experience, highly recommend their services.' }
+  ];
+
+  const filteredPortfolio = filterCategory === 'all' 
+    ? portfolioItems 
+    : portfolioItems.filter(item => item.category === filterCategory);
+
+  const scrollToSection = (sectionId) => {
+    setActiveSection(sectionId);
+    setIsMenuOpen(false);
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 font-sans">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full bg-white shadow-lg z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <Camera className="h-8 w-8 text-red-800" />
+              <span className="ml-2 text-xl font-bold text-red-800">Anchal Studio</span>
+            </div>
+            
+            {/* Desktop Menu */}
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-baseline space-x-4">
+                {['home', 'about', 'services', 'gallery', 'bookings', 'reviews', 'contact'].map((item) => (
+                  <button
+                    key={item}
+                    onClick={() => scrollToSection(item)}
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      activeSection === item
+                        ? 'bg-red-800 text-white'
+                        : 'text-gray-700 hover:bg-red-800 hover:text-white'
+                    }`}
+                  >
+                    {item.charAt(0).toUpperCase() + item.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="text-gray-700 hover:text-red-800 focus:outline-none"
+              >
+                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white">
+              {['home', 'about', 'services', 'gallery', 'bookings', 'reviews', 'contact'].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => scrollToSection(item)}
+                  className={`block px-3 py-2 rounded-md text-base font-medium w-full text-left transition-colors ${
+                    activeSection === item
+                      ? 'bg-red-800 text-white'
+                      : 'text-gray-700 hover:bg-red-800 hover:text-white'
+                  }`}
+                >
+                  {item.charAt(0).toUpperCase() + item.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* Hero Section */}
+      <section id="home" className="pt-16 bg-gradient-to-r from-red-900 to-red-700 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h1 className="text-4xl md:text-6xl font-bold mb-6">
+                Capture Your Precious Moments
+              </h1>
+              <p className="text-xl mb-8 text-red-100">
+                Professional Photography & Videography Services by Anchal Studio
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button 
+                  onClick={() => scrollToSection('bookings')}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-red-900 font-bold py-3 px-8 rounded-lg transition-colors"
+                >
+                  Book Now
+                </button>
+                <button 
+                  onClick={() => scrollToSection('gallery')}
+                  className="border-2 border-white hover:bg-white hover:text-red-900 font-bold py-3 px-8 rounded-lg transition-colors"
+                >
+                  View Gallery
+                </button>
+              </div>
+            </div>
+            <div className="relative">
+              <img 
+                src="https://placehold.co/600x400/D4AF37/7A1C1C?text=Professional+Photography" 
+                alt="Professional Photography" 
+                className="rounded-lg shadow-2xl"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-red-800 mb-4">About Anchal Studio</h2>
+            <div className="w-20 h-1 bg-yellow-500 mx-auto"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <img 
+                src="https://placehold.co/500x400/7A1C1C/FFFFFF?text=Anand+Kumar+-+Director" 
+                alt="Anand Kumar - Director" 
+                className="rounded-lg shadow-lg"
+              />
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">Anand Kumar - Director</h3>
+              <p className="text-gray-600 mb-6">
+                With over 10 years of experience in professional photography and videography, 
+                Anand Kumar leads Anchal Studio with passion and creativity. His expertise spans 
+                across various genres including weddings, portraits, events, and commercial shoots.
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-red-800">Our Mission</h4>
+                  <p className="text-gray-600">
+                    To capture life's most precious moments with artistic excellence and deliver 
+                    memories that last a lifetime.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-red-800">Our Vision</h4>
+                  <p className="text-gray-600">
+                    To become the premier destination for creative visual storytelling in the region, 
+                    known for our professionalism and exceptional quality.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-red-800 mb-4">Our Services</h2>
+            <div className="w-20 h-1 bg-yellow-500 mx-auto"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {services.map((service) => (
+              <div key={service.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <div className="p-6">
+                  <div className="flex items-center mb-4">
+                    {service.category === 'photography' ? 
+                      <Camera className="h-8 w-8 text-red-800 mr-3" /> : 
+                      <Video className="h-8 w-8 text-red-800 mr-3" />
+                    }
+                    <h3 className="text-xl font-bold text-gray-800">{service.name}</h3>
+                  </div>
+                  <p className="text-gray-600 mb-4">{service.description}</p>
+                  <div className="flex justify-between items-center">
+                    <span className="text-2xl font-bold text-red-800">{service.price}</span>
+                    <button 
+                      onClick={() => {
+                        setSelectedService(service.name);
+                        scrollToSection('bookings');
+                      }}
+                      className="bg-red-800 hover:bg-red-900 text-white px-4 py-2 rounded-lg transition-colors"
+                    >
+                      Book Now
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Gallery Section */}
+      <section id="gallery" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-red-800 mb-4">Our Portfolio</h2>
+            <div className="w-20 h-1 bg-yellow-500 mx-auto mb-8"></div>
+            
+            {/* Filter Buttons */}
+            <div className="flex flex-wrap justify-center gap-4 mb-8">
+              {['all', 'wedding', 'portrait', 'event'].map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setFilterCategory(category)}
+                  className={`px-6 py-2 rounded-full capitalize transition-colors ${
+                    filterCategory === category
+                      ? 'bg-red-800 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-red-800 hover:text-white'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredPortfolio.map((item) => (
+              <div key={item.id} className="relative group overflow-hidden rounded-lg shadow-lg">
+                <img 
+                  src={item.image} 
+                  alt={`Portfolio ${item.id}`}
+                  className="w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <button className="bg-white text-red-800 px-4 py-2 rounded-lg font-semibold">
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Bookings Section */}
+      <section id="bookings" className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-red-800 mb-4">Book Your Session</h2>
+            <div className="w-20 h-1 bg-yellow-500 mx-auto"></div>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <form className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2">Full Name</label>
+                  <input 
+                    type="text" 
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-transparent"
+                    placeholder="Enter your full name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2">Mobile Number</label>
+                  <input 
+                    type="tel" 
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-transparent"
+                    placeholder="+91 8737873521"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Select Service</label>
+                <select 
+                  value={selectedService}
+                  onChange={(e) => setSelectedService(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-transparent"
+                >
+                  <option value="">Choose a service</option>
+                  {services.map((service) => (
+                    <option key={service.id} value={service.name}>{service.name}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2">Preferred Date</label>
+                  <input 
+                    type="date" 
+                    value={bookingDate}
+                    onChange={(e) => setBookingDate(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2">Preferred Time</label>
+                  <input 
+                    type="time" 
+                    value={bookingTime}
+                    onChange={(e) => setBookingTime(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-transparent"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">Additional Notes</label>
+                <textarea 
+                  rows="4"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-transparent"
+                  placeholder="Any special requirements or preferences..."
+                ></textarea>
+              </div>
+              
+              <button 
+                type="submit"
+                className="w-full bg-red-800 hover:bg-red-900 text-white font-bold py-4 px-6 rounded-lg transition-colors"
+              >
+                Confirm Booking
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      {/* Reviews Section */}
+      <section id="reviews" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-red-800 mb-4">Customer Reviews</h2>
+            <div className="w-20 h-1 bg-yellow-500 mx-auto"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial) => (
+              <div key={testimonial.id} className="bg-gray-50 rounded-lg p-6 shadow-lg">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star 
+                      key={i} 
+                      className={`h-5 w-5 ${i < testimonial.rating ? 'text-yellow-500 fill-current' : 'text-gray-300'}`} 
+                    />
+                  ))}
+                </div>
+                <p className="text-gray-600 mb-4 italic">"{testimonial.comment}"</p>
+                <div className="flex items-center">
+                  <User className="h-8 w-8 text-red-800 mr-3" />
+                  <span className="font-semibold text-gray-800">{testimonial.name}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Payments Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-red-800 mb-4">Secure Payment Options</h2>
+          <div className="w-20 h-1 bg-yellow-500 mx-auto mb-8"></div>
+          
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <p className="text-gray-600 mb-8">
+              We offer multiple secure payment options for your convenience. All transactions are encrypted and processed securely.
+            </p>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div className="p-6 border border-gray-200 rounded-lg">
+                <div className="text-4xl mb-4">💳</div>
+                <h3 className="font-bold text-gray-800 mb-2">UPI Payments</h3>
+                <p className="text-gray-600 text-sm">Quick and instant transfers via UPI</p>
+              </div>
+              <div className="p-6 border border-gray-200 rounded-lg">
+                <div className="text-4xl mb-4">📱</div>
+                <h3 className="font-bold text-gray-800 mb-2">Paytm</h3>
+                <p className="text-gray-600 text-sm">Easy payments through Paytm wallet</p>
+              </div>
+              <div className="p-6 border border-gray-200 rounded-lg">
+                <div className="text-4xl mb-4">🌐</div>
+                <h3 className="font-bold text-gray-800 mb-2">Online Banking</h3>
+                <p className="text-gray-600 text-sm">Direct bank transfers and cards</p>
+              </div>
+            </div>
+            
+            <button className="mt-8 bg-red-800 hover:bg-red-900 text-white font-bold py-3 px-8 rounded-lg transition-colors">
+              Proceed to Payment
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-red-800 mb-4">Contact Us</h2>
+            <div className="w-20 h-1 bg-yellow-500 mx-auto"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div>
+              <div className="space-y-8">
+                <div className="flex items-start">
+                  <MapPin className="h-6 w-6 text-red-800 mt-1 mr-4" />
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">Address</h3>
+                    <p className="text-gray-600">
+                      Karra College, Kerakat<br />
+                      Dobhi, Jaunpur<br />
+                      Uttar Pradesh, 222149
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <Phone className="h-6 w-6 text-red-800 mt-1 mr-4" />
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">Phone</h3>
+                    <p className="text-gray-600">+91 8737873521</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <Mail className="h-6 w-6 text-red-800 mt-1 mr-4" />
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">Email</h3>
+                    <p className="text-gray-600">info@anchalstudio.com</p>
+                  </div>
+                </div>
+                
+                <div className="mt-8">
+                  <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30000!2d82.5855!3d25.7333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x398d5e4a1b4c1d4d%3A0x1234567890abcdef!2sJaunpur%2C%20Uttar%20Pradesh!5e0!3m2!1sen!2sin!4v1234567890"
+                    width="100%"
+                    height="300"
+                    className="rounded-lg shadow-lg border-0"
+                    allowFullScreen=""
+                    loading="lazy"
+                  ></iframe>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <div className="bg-gray-50 rounded-lg shadow-lg p-8">
+                <h3 className="text-2xl font-bold text-gray-800 mb-6">Send us a Message</h3>
+                <form className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-gray-700 font-semibold mb-2">First Name</label>
+                      <input 
+                        type="text" 
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-transparent"
+                        placeholder="John"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 font-semibold mb-2">Last Name</label>
+                      <input 
+                        type="text" 
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-transparent"
+                        placeholder="Doe"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-2">Email</label>
+                    <input 
+                      type="email" 
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-transparent"
+                      placeholder="john@example.com"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-2">Subject</label>
+                    <input 
+                      type="text" 
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-transparent"
+                      placeholder="How can we help you?"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-2">Message</label>
+                    <textarea 
+                      rows="5"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 focus:border-transparent"
+                      placeholder="Your message here..."
+                    ></textarea>
+                  </div>
+                  
+                  <button 
+                    type="submit"
+                    className="w-full bg-red-800 hover:bg-red-900 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                  >
+                    Send Message
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-red-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <div className="flex items-center mb-4">
+                <Camera className="h-8 w-8 text-yellow-500 mr-2" />
+                <span className="text-2xl font-bold">Anchal Studio</span>
+              </div>
+              <p className="text-red-200 mb-4">
+                Professional Photography & Videography Services capturing life's most precious moments.
+              </p>
+              <div className="flex space-x-4">
+                <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center cursor-pointer hover:bg-yellow-600 transition-colors">
+                  <span className="text-red-900 font-bold text-sm">f</span>
+                </div>
+                <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center cursor-pointer hover:bg-yellow-600 transition-colors">
+                  <span className="text-red-900 font-bold text-sm">t</span>
+                </div>
+                <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center cursor-pointer hover:bg-yellow-600 transition-colors">
+                  <span className="text-red-900 font-bold text-sm">in</span>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="text-xl font-bold mb-4">Quick Links</h3>
+              <ul className="space-y-2">
+                {['home', 'about', 'services', 'gallery', 'bookings', 'contact'].map((item) => (
+                  <li key={item}>
+                    <button 
+                      onClick={() => scrollToSection(item)}
+                      className="text-red-200 hover:text-white transition-colors capitalize"
+                    >
+                      {item}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-xl font-bold mb-4">Contact Info</h3>
+              <div className="space-y-3">
+                <div className="flex items-start">
+                  <MapPin className="h-5 w-5 text-yellow-500 mr-3 mt-1" />
+                  <span className="text-red-200">
+                    Karra College, Kerakat, Dobhi, Jaunpur, Uttar Pradesh, 222149
+                  </span>
+                </div>
+                <div className="flex items-center">
+                  <Phone className="h-5 w-5 text-yellow-500 mr-3" />
+                  <span className="text-red-200">+91 8737873521</span>
+                </div>
+                <div className="flex items-center">
+                  <Mail className="h-5 w-5 text-yellow-500 mr-3" />
+                  <span className="text-red-200">info@anchalstudio.com</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="border-t border-red-800 mt-8 pt-8 text-center">
+            <p className="text-red-200">
+              © 2024 Anchal Studio. All rights reserved. | Designed by Anand Kumar
+            </p>
+          </div>
+        </div>
+      </footer>
+
+      {/* WhatsApp Floating Button */}
+      <a 
+        href="https://wa.me/918737873521" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-colors z-40"
+      >
+        <MessageCircle className="h-6 w-6" />
+      </a>
+    </div>
+  );
+};
+
+export default App;
